@@ -301,31 +301,20 @@ async function submit() {
   btn.textContent = '⏳ Yuborilmoqda...';
 
   try {
-    // Telegram Bot API orqali yuborish (CORS muammosi yo'q)
-    const BOT_TOKEN = '8872919997:AAHT2nCQ8sVCOyIXtBHzKkKFtRuDT0uMFbI';
-    const CHAT_ID = payload.telegram_chat_id || '';
+    // GET so'rov orqali yuborish (CORS muammosi yo'q)
+    const encoded = encodeURIComponent(JSON.stringify(payload));
+    const getUrl = SHEET_URL + '?payload=' + encoded;
     
-    const msg = '📋 Yangi anketa!\n\n'
-      + '👤 ' + payload.fish + '\n'
-      + '📚 ' + payload.guruh + ' | ' + payload.yo + '\n'
-      + '📱 Talaba: ' + payload.tel_talaba + '\n'
-      + '👨 Ota: ' + payload.tel_ota + '\n'
-      + '👩 Ona: ' + payload.tel_ona + '\n'
-      + '💬 Telegram: ' + (payload.telegram || '—') + '\n'
-      + '🕐 ' + payload.sana;
-
-    // Admin chat ID ga yuborish
-    const ADMIN_CHAT_ID = '1974508485';
-    
-    await fetch('https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        chat_id: ADMIN_CHAT_ID,
-        text: msg,
-        parse_mode: 'HTML'
-      })
-    });
+    let ifr = document.getElementById('afu_iframe');
+    if (!ifr) {
+      ifr = document.createElement('iframe');
+      ifr.name = 'afu_iframe';
+      ifr.id = 'afu_iframe';
+      ifr.style.display = 'none';
+      document.body.appendChild(ifr);
+    }
+    ifr.src = getUrl;
+    await new Promise(r => setTimeout(r, 2000));
 
     // Success
     document.getElementById('suc-name').textContent = selTalaba.split(' ')[0];
