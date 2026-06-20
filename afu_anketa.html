@@ -247,7 +247,7 @@ function goStep3() {
   if (!selTalaba) { document.getElementById('err-tal').classList.add('show'); return; }
   document.getElementById('info-talaba').textContent = selTalaba;
   document.getElementById('info-guruh2').textContent = selGuruh + ' | ' + selYo;
-  if (tgUser) document.getElementById('tg-username').value = tgUser;
+  // tgUser avtomatik saqlanadi
   showStep('step3');
   setProgress(3);
 }
