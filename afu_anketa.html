@@ -301,20 +301,19 @@ async function submit() {
   btn.textContent = '⏳ Yuborilmoqda...';
 
   try {
-    // GET so'rov orqali yuborish (CORS muammosi yo'q)
+    // XMLHttpRequest orqali GET yuborish
     const encoded = encodeURIComponent(JSON.stringify(payload));
     const getUrl = SHEET_URL + '?payload=' + encoded;
     
-    let ifr = document.getElementById('afu_iframe');
-    if (!ifr) {
-      ifr = document.createElement('iframe');
-      ifr.name = 'afu_iframe';
-      ifr.id = 'afu_iframe';
-      ifr.style.display = 'none';
-      document.body.appendChild(ifr);
-    }
-    ifr.src = getUrl;
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise((resolve) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', getUrl, true);
+      xhr.onload = () => resolve();
+      xhr.onerror = () => resolve();
+      xhr.ontimeout = () => resolve();
+      xhr.timeout = 5000;
+      xhr.send();
+    });
 
     // Success
     document.getElementById('suc-name').textContent = selTalaba.split(' ')[0];
