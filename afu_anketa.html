@@ -314,6 +314,7 @@ async function submit() {
       + '💬 TG: ' + (payload.telegram || '—') + '\n'
       + '🕐 ' + payload.sana;
 
+    // 1. Telegram ga yuborish
     await fetch('https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -322,7 +323,14 @@ async function submit() {
         text: msg,
         parse_mode: 'HTML'
       })
-    });
+    }).catch(()=>{});
+
+    // 2. Google Sheets ga yuborish (GET orqali)
+    const encoded = encodeURIComponent(JSON.stringify(payload));
+    await fetch(SHEET_URL + '?payload=' + encoded, {
+      method: 'GET',
+      mode: 'no-cors'
+    }).catch(()=>{});
 
     // Success
     document.getElementById('suc-name').textContent = selTalaba.split(' ')[0];
