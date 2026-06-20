@@ -301,18 +301,27 @@ async function submit() {
   btn.textContent = '⏳ Yuborilmoqda...';
 
   try {
-    // XMLHttpRequest orqali GET yuborish
-    const encoded = encodeURIComponent(JSON.stringify(payload));
-    const getUrl = SHEET_URL + '?payload=' + encoded;
+    // Telegram Bot API orqali yuborish
+    const BOT_TOKEN = '8872919997:AAHT2nCQ8sVCOyIXtBHzKkKFtRuDT0uMFbI';
+    const ADMIN_ID = '7140527816';
     
-    await new Promise((resolve) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', getUrl, true);
-      xhr.onload = () => resolve();
-      xhr.onerror = () => resolve();
-      xhr.ontimeout = () => resolve();
-      xhr.timeout = 5000;
-      xhr.send();
+    const msg = '📋 <b>Yangi anketa!</b>\n\n'
+      + '👤 <b>' + payload.fish + '</b>\n'
+      + '📚 ' + payload.guruh + ' | ' + payload.yo + '\n'
+      + '📱 Talaba: <code>' + payload.tel_talaba + '</code>\n'
+      + '👨 Ota: <code>' + payload.tel_ota + '</code>\n'
+      + '👩 Ona: <code>' + payload.tel_ona + '</code>\n'
+      + '💬 TG: ' + (payload.telegram || '—') + '\n'
+      + '🕐 ' + payload.sana;
+
+    await fetch('https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        chat_id: ADMIN_ID,
+        text: msg,
+        parse_mode: 'HTML'
+      })
     });
 
     // Success
