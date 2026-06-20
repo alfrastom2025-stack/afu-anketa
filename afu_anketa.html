@@ -301,17 +301,9 @@ async function submit() {
   btn.textContent = '⏳ Yuborilmoqda...';
 
   try {
-    // Google Sheets ga yuborish - iframe usuli (CORS muammosi yo'q)
-    const formEl = document.createElement('form');
-    formEl.method = 'POST';
-    formEl.action = SHEET_URL;
-    formEl.target = 'afu_iframe';
-    formEl.style.display = 'none';
-    const inp = document.createElement('input');
-    inp.type = 'hidden';
-    inp.name = 'payload';
-    inp.value = JSON.stringify(payload);
-    formEl.appendChild(inp);
+    // Google Sheets ga yuborish - GET + iframe (CORS yo'q)
+    const encoded = encodeURIComponent(JSON.stringify(payload));
+    const getUrl = SHEET_URL + '?payload=' + encoded;
     let ifr = document.getElementById('afu_iframe');
     if (!ifr) {
       ifr = document.createElement('iframe');
@@ -320,10 +312,8 @@ async function submit() {
       ifr.style.display = 'none';
       document.body.appendChild(ifr);
     }
-    document.body.appendChild(formEl);
-    formEl.submit();
-    document.body.removeChild(formEl);
-    await new Promise(r => setTimeout(r, 1500));
+    ifr.src = getUrl;
+    await new Promise(r => setTimeout(r, 2000));
 
     // Success
     document.getElementById('suc-name').textContent = selTalaba.split(' ')[0];
